@@ -1,0 +1,4 @@
+17:42:02.040 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+17:42:02.195 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+17:52:55.989 [Thread-1] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+17:52:56.033 [NamespaceSystem-akka.actor.default-dispatcher-8] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: scout-post
