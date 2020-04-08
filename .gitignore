@@ -1,1 +1,5 @@
 .firebase/hosting.*
+node_modules/
+build/
+src/**/*.js
+test/integration/screenshots-current/

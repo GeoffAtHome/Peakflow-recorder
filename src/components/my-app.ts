@@ -19,6 +19,7 @@ import { firebase } from '@firebase/app';
 import '@firebase/database';
 import '@firebase/auth';
 
+const version = '1.0'
 // This element is connected to the Redux store.
 import { store, RootState } from '../store.js';
 
@@ -287,7 +288,7 @@ export class MyApp extends connect(store)(LitElement) {
       </main>
 
       <footer>
-        <p>Made with &hearts; by the Geoff.</p>
+        <p>Verion: ${version} - made with &hearts; by the Geoff.</p>
       </footer>
 
       <snack-bar ?active="${this._snackbarOpened}">
