@@ -19,7 +19,7 @@ import { firebase } from '@firebase/app';
 import '@firebase/database';
 import '@firebase/auth';
 
-const version = '1.0'
+const version = '1.1'
 // This element is connected to the Redux store.
 import { store, RootState } from '../store.js';
 

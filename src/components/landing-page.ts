@@ -74,47 +74,52 @@ export class LandingPage extends connect(store)(PageViewElement) {
     return [
       SharedStyles,
       css`
-            :host {
-                display: flex;
-                align-items: flex-start;
-                height: 100%;
-            }
+        :host {
+          display: flex;
+          align-items: flex-start;
+          height: 100%;
+        }
 
-            #label {
-                position: fixed;
-                fill: white;
-                bottom: 15px;
-                right: 15px;
-                z-index: 1;
-            }
+        #label {
+          position: fixed;
+          fill: white;
+          bottom: 15px;
+          right: 15px;
+          z-index: 1;
+        }
 
-            vaadin-grid {
-                width: 100%;
-            }
-          vaadin-grid-column {
-            width: 200px;
-            text-align: end;
-            flex-grow: 1;
-          }
+        mwc-textfield {
+          width: 200px;
+        }
+
+        vaadin-grid {
+          width: 100%;
+        }
+
+        vaadin-grid-column {
+          width: 200px;
+          text-align: end;
+          flex-grow: 1;
+        }
         `
     ];
   }
 
   protected render() {
     return html`
-            <mwc-dialog id='addDialog' heading="Add record" @closed='${this.closeAddDialog}'>
+            <mwc-dialog id='addDialog' heading="Add record"  scrimClickAction="">
                 <div>            
                     <div>
-                        <mwc-textfield id='one' type='number' label='Reading one'></mwc-textfield>
+                        <mwc-textfield id='one' initialFocusAttribute autoValidate min=1 max=1000 maxlength=4 pattern='[0-1][0-9][0-9][0-9]' validationMessage='Value needs to be between 1 and 1000' type='number' required label='Reading one (1-1000)'></mwc-textfield>
                     </div>
                     <div>
-                        <mwc-textfield id='two' type='number' label='Reading two'></mwc-textfield>
+                        <mwc-textfield id='two' autoValidate min=1 max=1000 maxlength=4 pattern='[0-1][0-9][0-9][0-9]' validationMessage='Value needs to be between 1 and 1000' type='number' required  label='Reading two (1-1000)'></mwc-textfield>
                     </div>
                     <div>
-                        <mwc-textfield id='three' type='number' label='Reading three'></mwc-textfield>
+                        <mwc-textfield id='three'autoValidate min=1 max=1000 maxlength=4 pattern='[0-1][0-9][0-9][0-9]' validationMessage='Value needs to be between 1 and 1000' type='number' required  label='Reading three  (1-1000)'></mwc-textfield>
                     </div>
                 </div>
-                <mwc-button slot="primaryAction" dialogAction="add">Add</mwc-button>
+                <mwc-button slot="primaryAction" @click='${this.addRecord}'>Add</mwc-button>
                 <mwc-button slot="secondaryAction" dialogAction="cancel">Cancel</mwc-button>
             </mwc-dialog>
       <section>
@@ -173,31 +178,19 @@ export class LandingPage extends connect(store)(PageViewElement) {
   }
 
   private addRecord() {
-    let record: PeakflowFirebaseRecord = {
-      reading1: this.readingOne.value,
-      reading2: this.readingTwo.value,
-      reading3: this.readingThree.value,
-      timestamp: new Date().getTime()
-    }
-
-    store.dispatch(peakflowAddRecord(record));
-
-    return this.addDialog.close();
-  }
-
-  private closeAddDialog(_el: any) {
-    if (_el.detail !== null) {
-      switch (_el.detail.action) {
-        case 'add':
-          return this.addRecord();
-
-        default:
-          return this.addDialog.close();
-
+    if (this.readingOne.validity && this.readingTwo.validity && this.readingThree.validity) {
+      let record: PeakflowFirebaseRecord = {
+        reading1: this.readingOne.value,
+        reading2: this.readingTwo.value,
+        reading3: this.readingThree.value,
+        timestamp: new Date().getTime()
       }
+
+      store.dispatch(peakflowAddRecord(record));
+
+      return this.addDialog.close();
     }
   }
-
 
   stateChanged(state: RootState) {
     if (this.drawopened !== state.app!.drawerOpened) {
