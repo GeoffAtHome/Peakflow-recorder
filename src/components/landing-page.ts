@@ -178,7 +178,7 @@ export class LandingPage extends connect(store)(PageViewElement) {
   }
 
   private addRecord() {
-    if (this.readingOne.validity && this.readingTwo.validity && this.readingThree.validity) {
+    if (this.readingOne.checkValidity() && this.readingTwo.checkValidity() && this.readingThree.checkValidity()) {
       let record: PeakflowFirebaseRecord = {
         reading1: this.readingOne.value,
         reading2: this.readingTwo.value,

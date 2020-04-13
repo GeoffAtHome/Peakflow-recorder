@@ -25,19 +25,6 @@ import '@material/mwc-dialog'
 import '@material/mwc-textfield';
 import '@material/mwc-button';
 
-// These are the actions needed by this element.
-import { UsersItem, userDataSelectUser } from '../actions/users.js';
-
-// We are lazy loading its reducer.
-import userdata, { userdataSelector } from '../reducers/users.js';
-
-if (userdataSelector(store.getState()) === undefined) {
-    store.addReducers({
-        userdata
-    });
-}
-
-
 @customElement('user-login')
 export class UserLogin extends connect(store)(PageViewElement) {
     @query('#emaildialog')
@@ -195,18 +182,6 @@ export class UserLogin extends connect(store)(PageViewElement) {
             this.displayName = '';
             this.email = '';
             this.photoURL = '';
-            const thisUser: UsersItem = {
-                displayName: '',
-                email: '',
-                photoURL: '',
-                uid: '',
-                claims: {
-                    admin: false,
-                    reader: false,
-                    member: false
-                }
-            }
-            store.dispatch(userDataSelectUser(thisUser));
         }).catch(function (error) {
             console.log(error);
         })
