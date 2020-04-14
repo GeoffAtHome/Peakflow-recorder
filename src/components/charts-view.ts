@@ -8,43 +8,67 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-import { html, customElement, css, query, LitElement, property } from 'lit-element';
+import { html, customElement, css, LitElement, property } from 'lit-element';
 
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
 import { connect } from 'pwa-helpers/connect-mixin.js';
+import '@google-web-components/google-chart'
 
 // This element is connected to the Redux store.
 import { store, RootState } from '../store.js';
 
-// These are the actions needed by this element.
+// We are lazy loading its reducer.
+import peakflowMap, { peakflowRecordSelector } from '../reducers/peakflowrecords.js';
+
+if (peakflowRecordSelector(store.getState()) === undefined) {
+    store.addReducers({
+        peakflowMap
+    });
+}
+
 
 
 
 @customElement('charts-view')
 export class ChartsView extends connect(store)(LitElement) {
-    @query('#mapid')
-    private mapid: any;
+    @property({ type: Array })
+    private data: Array<[Date, number, number, number]> = [];
 
-    @property({ type: Boolean, reflect: true })
-    private drawopened: boolean = false;
+    @property({ type: Object })
+    private options: {} = {
+        title: 'Peakflow',
+        curveType: 'function',
+        legend: 'right',
+        hAxis: {
+            title: 'Date'
+        },
+        vAxis: {
+            title: 'flow (1-1000)'
+        },
+    }
+
+    @property({ type: Array })
+    private cols: Array<{}> = [{ "label": "Date", "type": "datetime" }, { "label": "Peak", "type": "number" }, { "label": "Average", "type": "number" }, { "label": "Min", "type": "number" }]
 
     static get styles() {
         return [
             SharedStyles,
-
             css`
-                :host {
-                    display: block;
-                }
-            `
+            :host {
+                display: block;
+            }
+            google-chart {
+                width: 100vw
+            }
+        `
         ];
     }
 
     protected render() {
         return html`
         <h1>Charts View</h1>
-        <p>To be completed once we have more data to work with</p>
+        <google-chart .options='${this.options}' type='line' .cols='${this.cols}' .rows='${this.data}'></google-chart>
       `;
     }
 
@@ -52,14 +76,12 @@ export class ChartsView extends connect(store)(LitElement) {
     }
 
     stateChanged(state: RootState) {
-        if (this.drawopened !== state.app!.drawerOpened) {
-            this.drawopened = state.app!.drawerOpened;
-            if (this.drawopened) {
-                this.mapid.setAttribute('foreground', '')
-            } else {
-                this.mapid.removeAttribute('foreground');
-            }
+        const peakflowRecordState = peakflowRecordSelector(state);
+        const rawData = peakflowRecordState!.data
+        this.data = []
+        for (const item of rawData) {
+            this.data.push([new Date(item.timestamp), Math.max(item.reading1, item.reading2, item.reading3), (item.reading1 + item.reading2 + item.reading3) / 3, Math.min(item.reading1, item.reading2, item.reading3)])
         }
+        // this.chart.draw(this.data, options)
     }
 }
-
