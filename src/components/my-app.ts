@@ -288,7 +288,7 @@ export class MyApp extends connect(store)(LitElement) {
       </main>
 
       <footer>
-        <p>Verion: ${version} - made with &hearts; by the Geoff.</p>
+        <p>Version: ${version} - made with &hearts; by the Geoff.</p>
       </footer>
 
       <snack-bar ?active="${this._snackbarOpened}">
